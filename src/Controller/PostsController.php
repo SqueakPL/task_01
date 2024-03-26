@@ -18,6 +18,8 @@ class PostsController extends AbstractController
             ->getRepository(Book::class)
             ->findAll();
 
+        if (!$products) return $this->json("");
+
         $data = [];
 
         foreach ($products as $product) {

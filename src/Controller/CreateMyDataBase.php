@@ -36,61 +36,66 @@ class CreateMyDataBase extends Command
         $output->writeln('Tworzenie bazy');
 
         $client = HttpClient::create();
-        $books = $client->request(
-            'GET',
-            'https://jsonplaceholder.typicode.com/posts'
-        );
-        $artists = $client->request(
-            'GET',
-            'https://jsonplaceholder.typicode.com/users'
-        );
 
-        $books = $books->toArray();
-        $books_count = count($books);
+        if ($client) {
 
-        $artists = $artists->toArray();
-        $artists_count = count($artists);
+            $books = $client->request(
+                'GET',
+                'https://jsonplaceholder.typicode.com/posts'
+            );
+            $artists = $client->request(
+                'GET',
+                'https://jsonplaceholder.typicode.com/users'
+            );
 
-        $client = new CurlHttpClient(["verify_peer"=>false,"verify_host"=>false, "max_duration" => 1000]);///HttpClient::create();
+            if ($books && $artists) {
 
-        $n;
+                $books = $books->toArray();
+                $books_count = count($books);
 
-        for ($n = 0; $n < $books_count; $n++ ) {
+                $artists = $artists->toArray();
+                $artists_count = count($artists);
 
-            $userId = $books[$n]['userId'];
-            $bookID = $books[$n]['id'];
-            $title = $books[$n]['title'];
-            $body = $books[$n]['body'];
-            $name = '';
+                $client = new CurlHttpClient(["verify_peer"=>false,"verify_host"=>false]);
 
-            for ($m = 0; $m < $artists_count; $m++ ) {
+                if ($client) {
 
-                if ($artists[$m]['id']==$userId) {
+                    $n;
 
-                    $name = $artists[$m]['name'];
-                    break;
+                    for ($n = 0; $n < $books_count; $n++ ) {
+
+                        $userId = $books[$n]['userId'];
+                        $bookID = $books[$n]['id'];
+                        $title = $books[$n]['title'];
+                        $body = $books[$n]['body'];
+                        $name = '';
+
+                        for ($m = 0; $m < $artists_count; $m++ ) {
+
+                            if ($artists[$m]['id']==$userId) {
+
+                                $name = $artists[$m]['name'];
+                                break;
+                            }
+
+                        }
+
+                        $client->request(
+                            'POST',
+                            'https://localhost:8000/api/books?bookId=' . CreateMyDataBase::filtrujTekst( $bookID ) . '&name=' . CreateMyDataBase::filtrujTekst( $name )
+                            . '&title=' . CreateMyDataBase::filtrujTekst( $title ) . '&body=' . CreateMyDataBase::filtrujTekst( $body )
+                        );
+
+                    }
+
+                    $output->writeln('Dodano ' . $n . ' ksiazek !' );
+
+
                 }
 
             }
 
-            /*$payload = array(
-                "bookId" => $bookID,
-                "name" => $name,
-                "title" => $title,
-                "body" => $body,
-            );*/
-
-            $client->request(
-                'POST',
-                'https://localhost:8000/api/books?bookId=' . CreateMyDataBase::filtrujTekst( $bookID ) . '&name=' . CreateMyDataBase::filtrujTekst( $name )
-                . '&title=' . CreateMyDataBase::filtrujTekst( $title ) . '&body=' . CreateMyDataBase::filtrujTekst( $body )
-            );
-
-            //return $this->json($response);
-
         }
-
-        $output->writeln('Dodano ' . $n . ' ksiazek !' );
 
         return Command::SUCCESS;
     }
