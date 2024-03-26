@@ -40,7 +40,7 @@ class BookController extends AbstractController
         $entityManager = $doctrine->getManager();
 
         $book_id = $request->get('bookId');
-        $book_exist = $doctrine->getRepository(Book::class)->findOneBy(['bookId' => $book_id]);;
+        $book_exist = $doctrine->getRepository(Book::class)->findOneBy(['bookId' => $book_id]);
 
         if ($book_exist) {
 
@@ -85,7 +85,7 @@ class BookController extends AbstractController
     {
         $book_id = $id;//$request->get('bookId');
         //$book = $doctrine->getRepository(Books::class)->find($id);
-        $book = $doctrine->getRepository(Book::class)->findOneBy(['bookId' => $book_id]);;
+        $book = $doctrine->getRepository(Book::class)->findOneBy(['bookId' => $book_id]);
 
         if (!$book) {
 
