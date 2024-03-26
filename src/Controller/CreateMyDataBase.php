@@ -51,44 +51,49 @@ class CreateMyDataBase extends Command
             if ($books && $artists) {
 
                 $books = $books->toArray();
-                $books_count = count($books);
 
                 $artists = $artists->toArray();
-                $artists_count = count($artists);
 
-                $client = new CurlHttpClient(["verify_peer"=>false,"verify_host"=>false]);
+                if ($books && $artists) {
+                    
+                    $books_count = count($books);
+                    $artists_count = count($artists);
 
-                if ($client) {
+                    $client = new CurlHttpClient(["verify_peer"=>false,"verify_host"=>false]);
 
-                    $n;
+                    if ($client) {
 
-                    for ($n = 0; $n < $books_count; $n++ ) {
+                        $n;
 
-                        $userId = $books[$n]['userId'];
-                        $bookID = $books[$n]['id'];
-                        $title = $books[$n]['title'];
-                        $body = $books[$n]['body'];
-                        $name = '';
+                        for ($n = 0; $n < $books_count; $n++) {
 
-                        for ($m = 0; $m < $artists_count; $m++ ) {
+                            $userId = $books[$n]['userId'];
+                            $bookID = $books[$n]['id'];
+                            $title = $books[$n]['title'];
+                            $body = $books[$n]['body'];
+                            $name = '';
 
-                            if ($artists[$m]['id']==$userId) {
+                            for ($m = 0; $m < $artists_count; $m++) {
 
-                                $name = $artists[$m]['name'];
-                                break;
+                                if ($artists[$m]['id'] == $userId) {
+
+                                    $name = $artists[$m]['name'];
+                                    break;
+                                }
+
                             }
+
+                            $client->request(
+                                'POST',
+                                'https://localhost:8000/api/books?bookId=' . CreateMyDataBase::filtrujTekst($bookID) . '&name=' . CreateMyDataBase::filtrujTekst($name)
+                                . '&title=' . CreateMyDataBase::filtrujTekst($title) . '&body=' . CreateMyDataBase::filtrujTekst($body)
+                            );
 
                         }
 
-                        $client->request(
-                            'POST',
-                            'https://localhost:8000/api/books?bookId=' . CreateMyDataBase::filtrujTekst( $bookID ) . '&name=' . CreateMyDataBase::filtrujTekst( $name )
-                            . '&title=' . CreateMyDataBase::filtrujTekst( $title ) . '&body=' . CreateMyDataBase::filtrujTekst( $body )
-                        );
+                        $output->writeln('Dodano ' . $n . ' ksiazek !');
 
                     }
-
-                    $output->writeln('Dodano ' . $n . ' ksiazek !' );
 
 
                 }
