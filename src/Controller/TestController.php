@@ -18,7 +18,7 @@ class TestController extends AbstractController
     #[Route('/test', name: 'app_test')]
     public function index(): JsonResponse
     {
-        $client = HttpClient::create();
+        /*$client = HttpClient::create();
         $books = $client->request(
             'GET',
             'https://jsonplaceholder.typicode.com/posts'
@@ -78,9 +78,9 @@ class TestController extends AbstractController
 
             //return $this->json($response);
 
-        }
+        }*/
 
-        $arr = array('a' => $books[0]['title'], 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5);
+        $arr = array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5);
 
         return $this->json($arr);
     }
