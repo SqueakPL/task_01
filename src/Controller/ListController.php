@@ -52,7 +52,7 @@ class ListController extends AbstractController
         return new Response($html);
     }
 
-    #[Route('/lista/{id}', name: 'book_delete_fro_list'/*, methods:['delete']*/ )]
+    #[Route('/lista/{id}', name: 'book_delete_from_list'/*, methods:['delete']*/ )]
     public function delete(ManagerRegistry $doctrine, int $id): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
